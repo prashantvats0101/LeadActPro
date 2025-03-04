@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "107330709377",
+    "project_id": "leadactpro-af121",
+    "storage_bucket": "leadactpro-af121.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:107330709377:android:7f418b448201f7d24e2a80",
+        "android_client_info": {
+          "package_name": "com.leadactpro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZB6V2BsgRbOC_oj01KWP4W5uzC84tMK4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
