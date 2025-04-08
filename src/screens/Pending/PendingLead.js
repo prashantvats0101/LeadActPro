@@ -11,6 +11,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import LeadCardContact from './../../components/LeadCardContact';
 import {FAB, Provider as PaperProvider} from 'react-native-paper';
 import {_get} from '../../api/apiClient';
+import {useFocusEffect} from '@react-navigation/native';
 
 const PendingLead = ({navigation}) => {
   const [data, setData] = useState({data: []}); // Initialize with a default structure
@@ -21,26 +22,32 @@ const PendingLead = ({navigation}) => {
     fetchData();
   }, []);
 
-     const onRefreshh = useCallback(async () => {
-      setRefreshing(true);
-      try {
-        const response = await _post('/getpendingleads');
-        //console.log("API Response:", response);
-        const result = response?.data;
-        if (result) {
-          setData(result);
-        } else {
-          showError('No data found.');
-        }
-      } catch (error) {
-        // console.error("API Error:", error);
-        // Alert.alert("Error", "Something went wrong, please try again.");
-        //showError('Something went wrong, please try again');
-      } finally {
-        //setIsLoading(false);
-        setRefreshing(false);
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, []),
+  );
+
+  const onRefreshh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      const response = await _post('/getpendingleads');
+      //console.log("API Response:", response);
+      const result = response?.data;
+      if (result) {
+        setData(result);
+      } else {
+        showError('No data found.');
       }
-    }, []);
+    } catch (error) {
+      // console.error("API Error:", error);
+      // Alert.alert("Error", "Something went wrong, please try again.");
+      //showError('Something went wrong, please try again');
+    } finally {
+      //setIsLoading(false);
+      setRefreshing(false);
+    }
+  }, []);
 
   async function fetchData() {
     setIsLoading(true);
@@ -60,35 +67,35 @@ const PendingLead = ({navigation}) => {
     }
   }
 
- const handleSmsPress = (item) => {
-     const mobile = item?.mobile;
- 
-     const url = `sms:${mobile}`; // Using the "sms:" protocol
-     Linking.openURL(url)
-       .then((supported) => {
-         if (supported) {
-           Linking.openURL(url); // Open the default messaging app
-         } else {
-           Alert.alert("Error", "Unable to open the messaging app.");
-         }
-       })
-       .catch((err) => console.error("Error opening messaging app:", err));
-   };
- 
-   const handleWhatsappPress = (item) => {
-     const mobile = item?.mobile;
-     const url = `https://wa.me/${mobile}`; // WhatsApp URL scheme
- 
-     Linking.openURL(url)
-       .then((supported) => {
-         if (supported) {
-           Linking.openURL(url); // Open WhatsApp with the specified phone number
-         } else {
-           Alert.alert("Error", "WhatsApp is not installed on your device.");
-         }
-       })
-       .catch((err) => console.error("Error opening WhatsApp:", err));
-   };
+  const handleSmsPress = item => {
+    const mobile = item?.mobile;
+
+    const url = `sms:${mobile}`; // Using the "sms:" protocol
+    Linking.openURL(url)
+      .then(supported => {
+        if (supported) {
+          Linking.openURL(url); // Open the default messaging app
+        } else {
+          Alert.alert('Error', 'Unable to open the messaging app.');
+        }
+      })
+      .catch(err => console.error('Error opening messaging app:', err));
+  };
+
+  const handleWhatsappPress = item => {
+    const mobile = item?.mobile;
+    const url = `https://wa.me/${mobile}`; // WhatsApp URL scheme
+
+    Linking.openURL(url)
+      .then(supported => {
+        if (supported) {
+          Linking.openURL(url); // Open WhatsApp with the specified phone number
+        } else {
+          Alert.alert('Error', 'WhatsApp is not installed on your device.');
+        }
+      })
+      .catch(err => console.error('Error opening WhatsApp:', err));
+  };
 
   const renderItem = ({item}) => {
     return (
@@ -119,7 +126,7 @@ const PendingLead = ({navigation}) => {
           Alert.alert('Phone number is not available');
         } else {
           Linking.openURL(mobile);
-          navigation.navigate('ContactDetails', {
+          navigation.push('ContactDetails', {
             item: item,
           });
         }
@@ -137,6 +144,7 @@ const PendingLead = ({navigation}) => {
         <FlatList
           data={data?.data} // Use the fetched data
           refreshing={refreshing}
+          extraData={data.data}
           onRefresh={onRefreshh}
           keyExtractor={(item, index) => item.id || index.toString()}
           renderItem={renderItem}

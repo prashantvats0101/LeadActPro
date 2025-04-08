@@ -41,7 +41,7 @@ const NotIntrested = ({navigation,route}) => {
       // Handle API response
       if (response.status == 200) {
         showSuccess('Lead has been updated sucessfully');
-        navigation.replace('PendingLead',{item:item});
+        navigation.popTo('PendingLead',{item:item});
         setIsLoading(false);
       } else {
         showMessage(response.data.message || 'Login failed');

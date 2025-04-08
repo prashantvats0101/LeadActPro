@@ -1,27 +1,8 @@
-// import axios from 'axios';
-// import { API_BASE_URL } from './../utils/constant';
-// import { getToken } from './../utils/storage';
-
-// const apiClient = axios.create({
-//   baseURL: API_BASE_URL,
-//   timeout: 5000,
-//   headers: {
-//     'Content-Type': 'application/json',
-//   },
-// });
-
-
-
-// export default apiClient;
-
-
-// apiClient.js
-
 import axios from 'axios';
 
-import { API_BASE_URL } from './../utils/constant';
-import { getUserData } from './../components/EncryptedStorageUtil'
-import { useEffect } from 'react';
+import {API_BASE_URL} from './../utils/constant';
+import {getUserData} from './../components/EncryptedStorageUtil';
+import {useEffect} from 'react';
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -32,14 +13,14 @@ const apiClient = axios.create({
 
 // Add a request interceptor to include the token
 apiClient.interceptors.request.use(
-  async (config) => {
-    const token = await getUserData("userToken");
+  async config => {
+    const token = await getUserData('userToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  error => Promise.reject(error),
 );
 
 // Define common API methods
@@ -60,4 +41,4 @@ const _post = (url, data = {}, config = {}) => {
 };
 
 // Export API methods
-export { _get, _delete, _put, _post };
+export {_get, _delete, _put, _post};

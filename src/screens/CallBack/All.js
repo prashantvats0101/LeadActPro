@@ -12,6 +12,7 @@ import {
 import {_get} from '../../api/apiClient';
 import {showError} from './../../components/FlashMessage';
 import LeadCardContactCallBack from '../../components/LeadCardCallBack';
+import {useFocusEffect} from '@react-navigation/native';
 
 const All = ({navigation}) => {
   const [data, setData] = useState({data: []}); // Initialize with a default structure
@@ -22,12 +23,19 @@ const All = ({navigation}) => {
     fetchData();
   }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, []),
+  );
+
   const fetchData = async () => {
     setIsLoading(true);
     try {
       const response = await _get('/getcallback');
-      if (result) {
-        setData(result);
+      console.log('response get call', response.data.data);
+      if (response) {
+        setData(response.data);
       } else {
         showError('No data found.');
       }
@@ -209,11 +217,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  emptyText:{
-    flex:1,
+  emptyText: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
 });
 
 export default All;

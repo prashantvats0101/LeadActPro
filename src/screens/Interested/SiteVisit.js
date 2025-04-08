@@ -12,6 +12,7 @@ import {
 import {_get} from '../../api/apiClient';
 import {showError} from './../../components/FlashMessage';
 import LeadCardContactCallBack from '../../components/LeadCardCallBack';
+import {useFocusEffect} from '@react-navigation/native';
 
 const SiteVisit = ({navigation}) => {
   const [data, setData] = useState({data: []}); // Initialize with a default structure
@@ -21,6 +22,12 @@ const SiteVisit = ({navigation}) => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, []),
+  );
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -99,7 +106,7 @@ const SiteVisit = ({navigation}) => {
           oncardPress={() => {
             navigation.navigate('LeadInterested', {
               item: item,
-              screen : "SiteVisit"
+              screen: 'SiteVisit',
             });
           }}
           onCallPress={() => handleCallPress(item)} // Wrap in an anonymous function

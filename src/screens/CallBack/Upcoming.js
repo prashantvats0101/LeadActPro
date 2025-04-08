@@ -12,6 +12,7 @@ import {
 import {_get} from '../../api/apiClient';
 import {showError} from './../../components/FlashMessage';
 import LeadCardContactCallBack from '../../components/LeadCardCallBack';
+import {useFocusEffect} from '@react-navigation/native';
 
 const UpcomingScreen = ({navigation}) => {
   const [data, setData] = useState({data: []}); // Initialize with a default structure
@@ -21,6 +22,12 @@ const UpcomingScreen = ({navigation}) => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, []),
+  );
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -39,10 +46,6 @@ const UpcomingScreen = ({navigation}) => {
       setIsLoading(false);
     }
   };
-
-  //   async function fetchData() {
-
-  //   }
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);

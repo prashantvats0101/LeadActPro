@@ -5,6 +5,7 @@ import {
   Platform,
   PermissionsAndroid,
   Button,
+  View, TextInput, FlatList, Text, TouchableOpacity, ActivityIndicator, 
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import Search from './../../components/Search';
@@ -23,7 +24,9 @@ import {
   requestUserPermission,
 } from '../../utils/NotificationService';
 import {getUserData} from '../../components/EncryptedStorageUtil';
-
+import axios from 'axios';
+//import { useNavigation } from '@react-navigation/native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 const items = [
   {id: '1', name: 'Alice Johnson', number: '123-456-7890'},
   {id: '2', name: 'Bob Smith', number: '987-654-3210'},
@@ -33,7 +36,10 @@ const items = [
 
 const Home = ({navigation}) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredItems, setFilteredItems] = useState(items);
+  const [results, setResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  //const navigation = useNavigation();
   const [userName, setUserName] = useState();
   const [address, setAddress] = useState(null);
   const [deviceName, setDeviceName] = useState('Fetching...');
@@ -45,6 +51,43 @@ const Home = ({navigation}) => {
   const [fcmtoken, setFcmToken] = useState('');
   //const [deviceName, setDeviceName] = useState('');
   const [deviceType, setDeviceType] = useState('');
+
+
+  // Debounce function
+  useEffect(() => {
+    const debounceSearch = setTimeout(() => {
+      if (searchQuery.trim().length > 0) {
+        fetchSearchResults();
+      }
+    }, 500);
+
+    return () => clearTimeout(debounceSearch);
+  }, [searchQuery]);
+
+  const fetchSearchResults = async () => {
+    setIsLoading(true);
+    setError('');
+    try {
+      const response = await axios.get(`https://api.example.com/search?q=${searchQuery}`);
+      setResults(response.data);
+    } catch (err) {
+      setError('Failed to fetch results');
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleItemPress = (item) => {
+    navigation.navigate('DetailsScreen', { item });
+  };
+
+  const renderItem = ({ item }) => (
+    <TouchableOpacity style={styles.itemContainer} onPress={() => handleItemPress(item)}>
+      <Text style={styles.itemName}>{item.name}</Text>
+      <Text style={styles.itemDetails}>{item.details}</Text>
+    </TouchableOpacity>
+  );
 
   useEffect(() => {
     // Create the notification channel when the app starts
@@ -206,32 +249,6 @@ const Home = ({navigation}) => {
     }
   };
 
-  const handleSearch = text => {
-    setSearchQuery(text);
-
-    if (text.trim() === '') {
-      return; // Do nothing for empty search
-    }
-
-    const lowerCaseQuery = text.toLowerCase();
-    const foundItem = items.find(
-      item =>
-        item.name.toLowerCase().includes(lowerCaseQuery) ||
-        item.number.includes(lowerCaseQuery),
-    );
-
-    if (foundItem) {
-      Alert.alert(
-        'Item Found',
-        `Name: ${foundItem.name}\nNumber: ${foundItem.number}`,
-        [{text: 'OK'}],
-      );
-    } else {
-      Alert.alert('No Results Found', 'No match for the given query.', [
-        {text: 'OK'},
-      ]);
-    }
-  };
 
   return (
     <ScrollView>
@@ -242,7 +259,21 @@ const Home = ({navigation}) => {
         subtitle=""
         style={{}}
       />
-      <Search value={searchQuery} onChange={handleSearch} />
+      
+      <TouchableOpacity 
+        style={styles.searchContainer}
+        onPress={() => navigation.navigate('SearchScreen')}
+      >
+        <Ionicons name="search" size={20} color="#777" style={styles.searchIcon} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search..."
+          placeholderTextColor="#777"
+          editable={false} // Makes the TextInput non-editable
+          pointerEvents="none" // Makes the TextInput non-interactive
+        />
+      </TouchableOpacity>
+      {/* Rest of your home screen content */}
       <LeadCard onpress={() => {}} label={''} navigation={navigation} />
       <CustomRow
         title="Add Inventory"
@@ -283,6 +314,26 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: '#fff',
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    paddingHorizontal: 20,
+    marginVertical:8,
+    marginHorizontal: 10,
+    elevation: 2,
+    padding:4
+  },
+
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
+    height: 40,
+    color: '#000',
   },
   itemContainer: {
     padding: 16,

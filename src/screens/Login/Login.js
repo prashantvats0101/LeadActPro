@@ -13,7 +13,7 @@ import DeviceInfo from 'react-native-device-info';
 
 const Login = ({navigation}) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [email, setEmail] = useState('riyanshisinghal201@gmail.com'); // aman@iminate.com
+  const [email, setEmail] = useState('sikarwarnandini284@gmail.com'); // aman@iminate.com
   const [password, setPassword] = useState('12345678'); // Aman@123
   const dispatch = useDispatch();
   const {loading, error} = useSelector(state => state.auth);

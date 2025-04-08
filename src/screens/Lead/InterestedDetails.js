@@ -162,7 +162,7 @@ const InterestedDetails = ({navigation, route}) => {
       // Handle API response
       if (response.status == 200) {
         showSuccess('Lead has been updated sucessfully');
-        navigation.replace('PendingLead');
+        navigation.popTo('PendingLead');
         setIsLoading(false);
       } else {
         showMessage(response.data.message || 'Login failed');

@@ -71,4 +71,6 @@ export {default as WonLead} from './WonLeads/WonLead';
 
 export {default as NotificationContactDetails} from './../screens/Contacts/NotificationContactDetails';
 
+//Search
+export {default as SearchScreen} from './Search/Search';
 

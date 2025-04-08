@@ -71,7 +71,12 @@ const onMessageListener = navigation => {
           const item = {
             id: id,
           };
-          navigation.navigate(screen, {item: item}); // Navigate to the specified screen
+
+          setTimeout(() => {
+            navigation.navigate(screen, {item: item}); // Navigate after 3 seconds
+          }, 5000);
+
+          // Navigate to the specified screen
         }
       }
     });
@@ -87,7 +92,9 @@ export async function notificationListeners() {
     const item = {
       id: remoteMessage?.data?.id,
     };
-    NavigationService.navigate('ContactDetails', {item: item});
+    setTimeout(() => {
+      NavigationService.navigate('ContactDetails', {item: item}); // Navigate after 3 seconds
+    }, 3000);
   });
 
   messaging()
@@ -101,12 +108,12 @@ export async function notificationListeners() {
         resolve.then(() => {
           setTimeout(() => {
             NavigationService.navigate(screen, {item: item});
-          }, 5000);
+          }, 3000);
         });
 
         setTimeout(() => {
           NavigationService.navigate(screen, {item: item});
-        }, 5000);
+        }, 3000);
         NavigationService.navigate(screen, {item: item});
       } else {
         // console.log('something went wrong, please try later!');

@@ -9,7 +9,7 @@ const CustomHeader = ({navigation}) => {
     Alert.alert("Logout", "Are you sure you want to log out?", [
       { text: "Cancel", style: "cancel" },
       { text: "Yes", onPress: () => {
-        clearStorage()
+        clearStorage();
         navigation.navigate("Login");
       },
     }

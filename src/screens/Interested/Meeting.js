@@ -12,6 +12,7 @@ import {
 import {_get} from '../../api/apiClient';
 import {showError} from './../../components/FlashMessage';
 import LeadCardContactCallBack from '../../components/LeadCardCallBack';
+import {useFocusEffect} from '@react-navigation/native';
 
 const Meeting = ({navigation}) => {
   const [data, setData] = useState({data: []}); // Initialize with a default structure
@@ -21,6 +22,12 @@ const Meeting = ({navigation}) => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, []),
+  );
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -99,7 +106,7 @@ const Meeting = ({navigation}) => {
           oncardPress={() => {
             navigation.navigate('LeadInterested', {
               item: item,
-              screen:"Meeting"
+              screen: 'Meeting',
             });
           }}
           onCallPress={() => handleCallPress(item)} // Wrap in an anonymous function
@@ -211,11 +218,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  emptyText:{
-    flex:1,
+  emptyText: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
 });
 
 export default Meeting;
